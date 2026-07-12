@@ -239,20 +239,6 @@ function createContactModule(group, color) {
   const tip = new THREE.Mesh(tipGeo, tipMat);
   tip.position.y = 0.55;
   group.add(tip);
-
-  // Vertical light transmission beam
-  const beamGeo = new THREE.CylinderGeometry(0.18, 0.18, 12, 16, 1, true);
-  const beamMat = new THREE.MeshBasicMaterial({
-    color: 0x00f3ff,
-    transparent: true,
-    opacity: 0.08,
-    side: THREE.DoubleSide,
-    blending: THREE.AdditiveBlending
-  });
-  const beam = new THREE.Mesh(beamGeo, beamMat);
-  beam.position.y = 6.4;
-  beam.name = 'contact_beam';
-  group.add(beam);
 }
 
 // Raycasting module detection
