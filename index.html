@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahmed Gamal Farouk // Core Intelligence System</title>
+    <!-- Google Fonts for sci-fi cyber design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <!-- Canvas for Three.js -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- CRT Scanline Sci-Fi Overlay Effect -->
+    <div class="crt-overlay"></div>
+
+    <!-- Welcome Overlay Sequence -->
+    <div id="welcome-overlay">
+      <div class="welcome-content">
+        <h1 class="welcome-title">WELCOME TO AHMED GAMAL FAROUK'S PORTFOLIO</h1>
+        <button id="enter-btn" class="glow-button">[ ENTER ]</button>
+      </div>
+    </div>
+
+    <!-- HUD Overlay for general status -->
+    <div id="hud-overlay" class="hidden">
+      <div class="hud-header">
+        <div class="hud-status">
+          <span class="status-pulse"></span>
+          <span id="system-status-text">SYSTEM: INITIALIZING...</span>
+        </div>
+        <div class="hud-title">CORE_INTEL_v1.0.3</div>
+      </div>
+      
+      <!-- Subtitle/Instructions -->
+      <div id="instructions-container" class="instructions">
+        <p id="instruction-text">Initializing neural interface...</p>
+      </div>
+
+      <!-- Reset/Back to Motherboard button (only visible when in module view) -->
+      <button id="back-btn" class="hud-back-btn hidden">&lt; BACK TO CORE</button>
+    </div>
+
+    <!-- Dynamic Holographic HTML Container (Anchored to 3D chips) -->
+    <div id="hologram-container" class="hidden">
+      <!-- Panels will be dynamically generated and injected here by hologramUI.js -->
+    </div>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

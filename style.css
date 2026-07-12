@@ -1,0 +1,543 @@
+/* Root Variables for Neon Color Palette */
+:root {
+  --color-bg: #030308;
+  --color-primary: #00f3ff;     /* Electric Blue */
+  --color-secondary: #bd00ff;   /* Violet */
+  --color-cyan: #00ffd5;        /* Cyan Intense */
+  --color-gold: #ffd700;        /* Subtle Gold */
+  --color-white: #ffffff;
+  --color-text-dim: #8b9bb4;
+  --font-title: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --glow-blue: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.2);
+  --glow-violet: 0 0 10px rgba(189, 0, 255, 0.5), 0 0 20px rgba(189, 0, 255, 0.2);
+  --glow-cyan: 0 0 15px rgba(0, 255, 213, 0.6), 0 0 30px rgba(0, 255, 213, 0.3);
+  --glow-gold: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* Reset and Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000000;
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+/* Canvas Styling */
+#webgl-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+}
+
+/* CRT Scanlines Overlay */
+.crt-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 4px, 6px 100%;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Welcome Overlay Sequence */
+#welcome-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1.5s ease;
+}
+
+.welcome-content {
+  text-align: center;
+  max-width: 90%;
+  width: 600px;
+}
+
+.welcome-title {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: welcomeFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  color: var(--color-white);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.glow-button {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid rgba(0, 243, 255, 0.4);
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: welcomeFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-button:hover {
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: var(--glow-blue);
+  transform: translateY(10px) scale(1.05);
+}
+
+.glow-button:active {
+  box-shadow: 0 0 25px rgba(0, 243, 255, 0.9);
+  transition: 0.05s;
+}
+
+@keyframes welcomeFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* General Hide Utility */
+.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transition: opacity 0.5s ease, visibility 0.5s;
+}
+
+/* HUD System Overlay */
+#hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  transition: opacity 0.5s ease;
+}
+
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  color: var(--color-primary);
+  text-shadow: var(--glow-blue);
+}
+
+.hud-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite alternate;
+}
+
+.hud-title {
+  letter-spacing: 0.1em;
+}
+
+.instructions {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--color-text-dim);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+  background: rgba(3, 3, 8, 0.7);
+  padding: 0.5rem 1.5rem;
+  border-left: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+  backdrop-filter: blur(5px);
+  pointer-events: auto;
+}
+
+.hud-back-btn {
+  position: absolute;
+  top: 5rem;
+  left: 1.5rem;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--color-white);
+  background: rgba(3, 3, 8, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  z-index: 50;
+}
+
+.hud-back-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--glow-blue);
+}
+
+@keyframes pulse {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+/* Hologram Panel Overlay Styles */
+#hologram-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* Class applied to individual active holographic panels */
+.holo-panel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: rgba(3, 3, 12, 0.45);
+  border: 1.5px solid var(--panel-color, var(--color-primary));
+  box-shadow: 0 0 15px rgba(var(--panel-color-rgb, 0, 243, 255), 0.15), inset 0 0 15px rgba(var(--panel-color-rgb, 0, 243, 255), 0.05);
+  border-radius: 4px;
+  padding: 1.2rem;
+  backdrop-filter: blur(12px);
+  width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: auto;
+  animation: panelFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-color, var(--color-primary)) rgba(0,0,0,0.1);
+}
+
+.holo-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.holo-panel::-webkit-scrollbar-thumb {
+  background-color: var(--panel-color, var(--color-primary));
+  border-radius: 2px;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.holo-header {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--panel-color, var(--color-primary));
+  border-bottom: 1px solid rgba(var(--panel-color-rgb, 0, 243, 255), 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.holo-content {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-white);
+}
+
+.holo-section-title {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  color: var(--panel-color, var(--color-primary));
+  margin: 0.8rem 0 0.4rem 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Specific module styles inside hologram UI */
+/* Technical Module */
+.tech-skill-group {
+  margin-bottom: 0.6rem;
+}
+.tech-skill-label {
+  font-family: var(--font-mono);
+  color: var(--color-text-dim);
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+.tech-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tech-tag {
+  background: rgba(0, 243, 255, 0.1);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  color: var(--color-primary);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  border-radius: 2px;
+}
+
+/* Non-Technical Module */
+.soft-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+.soft-skill-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.soft-skill-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-secondary);
+  box-shadow: var(--glow-violet);
+  border-radius: 50%;
+}
+.soft-skill-text {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* Certifications Module */
+.cert-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cert-card {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  padding: 0.6rem;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+.cert-card:hover {
+  border-color: var(--color-gold);
+  box-shadow: var(--glow-gold);
+  background: rgba(255, 215, 0, 0.08);
+}
+.cert-name {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gold);
+  margin-bottom: 0.15rem;
+}
+.cert-org {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+/* Projects Module */
+.project-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.project-card {
+  background: rgba(0, 255, 213, 0.05);
+  border: 1px solid rgba(0, 255, 213, 0.2);
+  padding: 0.8rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.1s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+.project-card:hover {
+  border-color: var(--color-cyan);
+  box-shadow: var(--glow-cyan);
+}
+.project-title {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-cyan);
+  margin-bottom: 0.3rem;
+}
+.project-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  line-height: 1.3;
+}
+
+/* Contact Module */
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 0.5rem;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-white);
+  text-decoration: none;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+.contact-item:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 243, 255, 0.05);
+  box-shadow: var(--glow-blue);
+  transform: translateX(4px);
+}
+.contact-icon {
+  font-size: 1rem;
+}
+.contact-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-primary);
+}
+.contact-value {
+  font-size: 0.75rem;
+  color: var(--color-white);
+  word-break: break-all;
+}
+
+/* Hologram Scanning Line Animation */
+.holo-panel::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 243, 255, 0.06) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 255, 255, 0.01));
+  background-size: 100% 8px, 8px 100%;
+  z-index: 10;
+  pointer-events: none;
+  animation: panelScan 8s linear infinite;
+}
+
+@keyframes panelScan {
+  from { background-position: 0 0; }
+  to { background-position: 0 100%; }
+}
+
+/* Close/Close Button for UI */
+.holo-close-btn {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+  background: transparent;
+  border: none;
+  padding: 2px 6px;
+}
+.holo-close-btn:hover {
+  color: var(--panel-color, var(--color-primary));
+}
+
+/* Animated Code Stream background for Hologram Panel (Tech) */
+.code-stream-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-primary);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+  white-space: nowrap;
+}
+
+/* Responsive Scaling for Mobile Screens */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+  }
+  .glow-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+  .holo-panel {
+    width: 90%;
+    max-width: 320px;
+    padding: 1rem;
+  }
+  .instructions {
+    width: 90%;
+    font-size: 0.8rem;
+    bottom: 1.5rem;
+  }
+  .hud-back-btn {
+    top: 4.5rem;
+    left: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+}
