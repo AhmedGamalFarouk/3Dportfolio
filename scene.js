@@ -23,10 +23,10 @@ export function initScene() {
 
   // Scene
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x010103);
+  scene.background = null; // transparent background to see spiral-canvas
   
-  // Fog for deep atmosphere
-  scene.fog = new THREE.FogExp2(0x010103, 0.035);
+  // Fog for deep atmosphere fading to black
+  scene.fog = new THREE.FogExp2(0x000000, 0.035);
 
   // Camera
   camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -37,7 +37,7 @@ export function initScene() {
   renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true,
-    alpha: false,
+    alpha: true, // transparent WebGL canvas overlay
     powerPreference: "high-performance"
   });
   renderer.setSize(window.innerWidth, window.innerHeight);

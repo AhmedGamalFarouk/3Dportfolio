@@ -7,33 +7,7 @@ const MAX_SPARKS = 150;
 
 // Setup Particle Systems
 export function initParticles(scene) {
-  // 1. Ambient Space Dust (slow floating embers in fog)
-  const ambientCount = 350;
-  ambientGeo = new THREE.BufferGeometry();
-  const ambientPositions = new Float32Array(ambientCount * 3);
-  
-  for (let i = 0; i < ambientCount; i++) {
-    ambientPositions[i * 3] = (Math.random() - 0.5) * 32;
-    ambientPositions[i * 3 + 1] = Math.random() * 8 + 0.2; // Keep above motherboard
-    ambientPositions[i * 3 + 2] = (Math.random() - 0.5) * 32;
-  }
-
-  ambientGeo.setAttribute('position', new THREE.BufferAttribute(ambientPositions, 3));
-
-  // Small soft cyan glowing circles
-  const ambientMat = new THREE.PointsMaterial({
-    color: 0x00f3ff,
-    size: 0.065,
-    transparent: true,
-    opacity: 0.45,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-
-  ambientParticles = new THREE.Points(ambientGeo, ambientMat);
-  scene.add(ambientParticles);
-
-  // 2. CPU Sparks Explosion Particle System
+  // CPU Sparks Explosion Particle System
   sparkGeo = new THREE.BufferGeometry();
   const sparkPositions = new Float32Array(MAX_SPARKS * 3);
   const sparkColors = new Float32Array(MAX_SPARKS * 3);
@@ -94,24 +68,6 @@ export function triggerCpuExplosion() {
 export function updateParticles(time) {
   // Constant delta time (approx 16ms)
   const dt = 0.016;
-
-  // 1. Animate space dust slowly floating and weaving
-  if (ambientParticles) {
-    const positions = ambientGeo.attributes.position.array;
-    for (let i = 0; i < positions.length / 3; i++) {
-      // Drift upwards
-      positions[i * 3 + 1] += 0.04 * dt;
-      // Add subtle weaving wave
-      positions[i * 3] += Math.sin(time + i) * 0.01 * dt;
-      positions[i * 3 + 2] += Math.cos(time + i) * 0.01 * dt;
-
-      // Wrap around when rising too high
-      if (positions[i * 3 + 1] > 8.0) {
-        positions[i * 3 + 1] = 0.2;
-      }
-    }
-    ambientGeo.attributes.position.needsUpdate = true;
-  }
 
   // 2. Animate sparks physics
   if (sparkPoints && activeSparks.length > 0) {
