@@ -12,18 +12,38 @@ export function initCPU(scene) {
   // 1. Motherboard substrate (Large base board)
   const boardGeo = new THREE.BoxGeometry(22, 0.15, 22);
   const boardMat = new THREE.MeshStandardMaterial({
-    color: 0x070912,
-    roughness: 0.8,
-    metalness: 0.6,
+    color: 0x0d111f, // Richer blue-grey tone
+    roughness: 0.4,   // Lower roughness to catch metallic reflections
+    metalness: 0.85,  // Higher metalness for sci-fi look
   });
   boardMesh = new THREE.Mesh(boardGeo, boardMat);
   boardMesh.receiveShadow = true;
   scene.add(boardMesh);
 
+  // Add a glowing neon electric-blue frame around the motherboard edge
+  const borderGeo = new THREE.BoxGeometry(22.1, 0.16, 22.1);
+  const borderMat = new THREE.MeshStandardMaterial({
+    color: 0x05060b,
+    roughness: 0.1,
+    metalness: 0.9,
+    emissive: 0x00f3ff,
+    emissiveIntensity: 0.55 // Glowing cyber borders
+  });
+  const borderMesh = new THREE.Mesh(borderGeo, borderMat);
+  borderMesh.position.y = -0.01;
+  scene.add(borderMesh);
+
+  // Add a gold boundary grid trace line
+  const goldGrid = new THREE.GridHelper(21.9, 2, 0xffd700, 0xffd700);
+  goldGrid.position.y = 0.086;
+  goldGrid.material.opacity = 0.45;
+  goldGrid.material.transparent = true;
+  scene.add(goldGrid);
+
   // Motherboard micro details (copper-like metallic paths printed on board)
   const detailGrid = new THREE.GridHelper(20, 40, 0x00f3ff, 0x111630);
   detailGrid.position.y = 0.085;
-  detailGrid.material.opacity = 0.18;
+  detailGrid.material.opacity = 0.35; // Increased trace sharpness
   detailGrid.material.transparent = true;
   scene.add(detailGrid);
 
