@@ -108,7 +108,7 @@ body, html {
   opacity: 0;
   transform: translateY(10px);
   animation: welcomeFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -214,7 +214,7 @@ body, html {
   padding: 0.6rem 1.2rem;
   cursor: pointer;
   pointer-events: auto;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   backdrop-filter: blur(5px);
   z-index: 50;
 }
@@ -373,7 +373,7 @@ body, html {
   border: 1px solid rgba(255, 215, 0, 0.25);
   padding: 0.6rem;
   border-radius: 3px;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 .cert-card:hover {
   border-color: var(--color-gold);
@@ -399,6 +399,9 @@ body, html {
   gap: 12px;
 }
 .project-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: rgba(0, 255, 213, 0.05);
   border: 1px solid rgba(0, 255, 213, 0.2);
   padding: 0.8rem;
@@ -442,7 +445,7 @@ body, html {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 3px;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 .contact-item:hover {
   border-color: var(--color-primary);
@@ -541,3 +544,27 @@ body, html {
     font-size: 0.75rem;
   }
 }
+
+/* Keyboard accessible visible focus outline states */
+.glow-button:focus-visible,
+.hud-back-btn:focus-visible,
+.holo-close-btn:focus-visible,
+.project-card:focus-visible,
+.contact-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* Support for users requesting reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: scroll !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+  }
+}
+

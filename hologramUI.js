@@ -13,7 +13,7 @@ const dataContent = {
     rgb: '0, 243, 255',
     html: `
       <div class="code-stream-bg" id="code-bg"></div>
-      <div class="holo-section-title">// PROGRAMMING LANGUAGES</div>
+      <h3 class="holo-section-title">// PROGRAMMING LANGUAGES</h3>
       <div class="tech-skill-group">
         <div class="tech-skill-tags">
           <span class="tech-tag">Dart</span>
@@ -26,7 +26,7 @@ const dataContent = {
         </div>
       </div>
       
-      <div class="holo-section-title">// FRAMEWORKS & LIBRARIES</div>
+      <h3 class="holo-section-title">// FRAMEWORKS & LIBRARIES</h3>
       <div class="tech-skill-group">
         <div class="tech-skill-tags">
           <span class="tech-tag" style="border-color: #02a9ff; color: #02a9ff;">Flutter</span>
@@ -36,7 +36,7 @@ const dataContent = {
         </div>
       </div>
 
-      <div class="holo-section-title">// BACKEND & DATABASES</div>
+      <h3 class="holo-section-title">// BACKEND & DATABASES</h3>
       <div class="tech-skill-group">
         <div class="tech-skill-tags">
           <span class="tech-tag">Firebase</span>
@@ -45,7 +45,7 @@ const dataContent = {
         </div>
       </div>
 
-      <div class="holo-section-title">// TOOLS & METHODS</div>
+      <h3 class="holo-section-title">// TOOLS & METHODS</h3>
       <div class="tech-skill-group">
         <div class="tech-skill-tags">
           <span class="tech-tag">Git</span>
@@ -64,7 +64,7 @@ const dataContent = {
     color: '#bd00ff',
     rgb: '189, 0, 255',
     html: `
-      <div class="holo-section-title">// INTERPERSONAL SYSTEM</div>
+      <h3 class="holo-section-title">// INTERPERSONAL SYSTEM</h3>
       <div class="soft-skill-list">
         <div class="soft-skill-item">
           <div class="soft-skill-dot"></div>
@@ -94,7 +94,7 @@ const dataContent = {
     color: '#ffd700',
     rgb: '255, 215, 0',
     html: `
-      <div class="holo-section-title">// VERIFIED CREDENTIALS</div>
+      <h3 class="holo-section-title">// VERIFIED CREDENTIALS</h3>
       <div class="cert-slider">
         <div class="cert-card">
           <div class="cert-name">Front End & Crossplatform Mobile Development</div>
@@ -128,27 +128,27 @@ const dataContent = {
     color: '#00ffd5',
     rgb: '0, 255, 213',
     html: `
-      <div class="holo-section-title">// REALIZED ARCHITECTURES</div>
+      <h3 class="holo-section-title">// REALIZED ARCHITECTURES</h3>
       <div class="project-card-container">
-        <div class="project-card tilt-card" onclick="window.open('https://github.com/ahmedgamalfarouk', '_blank')">
-          <div class="project-title">Eshtry Menny</div>
-          <div class="project-desc">A full e-commerce shopping client built with Flutter, SQLite local persistence, and BLoC state architecture.</div>
-        </div>
+        <a href="https://github.com/ahmedgamalfarouk" target="_blank" rel="noopener noreferrer" class="project-card tilt-card">
+          <h4 class="project-title">Eshtry Menny</h4>
+          <p class="project-desc">A full e-commerce shopping client built with Flutter, SQLite local persistence, and BLoC state architecture.</p>
+        </a>
         
-        <div class="project-card tilt-card" onclick="window.open('https://github.com/ahmedgamalfarouk', '_blank')">
-          <div class="project-title">Cinema Flux</div>
-          <div class="project-desc">A futuristic, sleek, cinematic movies platform developed using React, Redux Toolkit, and Vite compilation.</div>
-        </div>
+        <a href="https://github.com/ahmedgamalfarouk" target="_blank" rel="noopener noreferrer" class="project-card tilt-card">
+          <h4 class="project-title">Cinema Flux</h4>
+          <p class="project-desc">A futuristic, sleek, cinematic movies platform developed using React, Redux Toolkit, and Vite compilation.</p>
+        </a>
         
-        <div class="project-card tilt-card" onclick="window.open('https://github.com/ahmedgamalfarouk', '_blank')">
-          <div class="project-title">Circle & Circle-Mobile</div>
-          <div class="project-desc">A dual event planning ecosystem (React web + React Native mobile app) integrated with Firebase realtime Firestore.</div>
-        </div>
+        <a href="https://github.com/ahmedgamalfarouk" target="_blank" rel="noopener noreferrer" class="project-card tilt-card">
+          <h4 class="project-title">Circle & Circle-Mobile</h4>
+          <p class="project-desc">A dual event planning ecosystem (React web + React Native mobile app) integrated with Firebase realtime Firestore.</p>
+        </a>
 
-        <div class="project-card tilt-card" onclick="window.open('https://github.com/ahmedgamalfarouk', '_blank')">
-          <div class="project-title">Social Media App</div>
-          <div class="project-desc">Full social networking system leveraging Flutter, Firebase Auth, Firestore, and cloud storage.</div>
-        </div>
+        <a href="https://github.com/ahmedgamalfarouk" target="_blank" rel="noopener noreferrer" class="project-card tilt-card">
+          <h4 class="project-title">Social Media App</h4>
+          <p class="project-desc">Full social networking system leveraging Flutter, Firebase Auth, Firestore, and cloud storage.</p>
+        </a>
       </div>
     `
   },
@@ -157,10 +157,10 @@ const dataContent = {
     color: '#ffffff',
     rgb: '255, 255, 255',
     html: `
-      <div class="holo-section-title">// TRANSMISSION CODES</div>
+      <h3 class="holo-section-title">// TRANSMISSION CODES</h3>
       <div class="contact-list">
         <a href="mailto:ahmedgamalfarouk0@gmail.com" class="contact-item">
-          <span class="contact-icon">📧</span>
+          <span class="contact-icon" aria-hidden="true">📧</span>
           <div>
             <div class="contact-label">EMAIL</div>
             <div class="contact-value">ahmedgamalfarouk0@gmail.com</div>
@@ -168,23 +168,23 @@ const dataContent = {
         </a>
         
         <a href="tel:+201023510831" class="contact-item">
-          <span class="contact-icon">📞</span>
+          <span class="contact-icon" aria-hidden="true">📞</span>
           <div>
             <div class="contact-label">PHONE</div>
             <div class="contact-value">+20 102 351 0831</div>
           </div>
         </a>
 
-        <a href="https://linkedin.com" target="_blank" class="contact-item">
-          <span class="contact-icon">🔗</span>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="contact-item">
+          <span class="contact-icon" aria-hidden="true">🔗</span>
           <div>
             <div class="contact-label">LINKEDIN</div>
             <div class="contact-value">ahmedgamalfarouk</div>
           </div>
         </a>
 
-        <a href="https://github.com/ahmedgamalfarouk" target="_blank" class="contact-item">
-          <span class="contact-icon">🐙</span>
+        <a href="https://github.com/ahmedgamalfarouk" target="_blank" rel="noopener noreferrer" class="contact-item">
+          <span class="contact-icon" aria-hidden="true">🐙</span>
           <div>
             <div class="contact-label">GITHUB</div>
             <div class="contact-value">github.com/ahmedgamalfarouk</div>
@@ -213,8 +213,8 @@ export function showHologram(moduleData) {
   
   panel.innerHTML = `
     <div class="holo-header">
-      <span>${content.title}</span>
-      <button class="holo-close-btn">[ X ]</button>
+      <h2 style="margin: 0; font-size: inherit; font-weight: inherit; color: inherit; letter-spacing: inherit;">${content.title}</h2>
+      <button class="holo-close-btn" aria-label="Close details">[ X ]</button>
     </div>
     <div class="holo-content">
       ${content.html}

@@ -239,7 +239,7 @@ function initialize3DExperience() {
   
   // Show base HUD
   hudOverlay.classList.remove('hidden');
-  updateSystemStatus('INITIALIZING INTERFACE...', 'Booting neural motherboard diagnostics...');
+  updateSystemStatus('INITIALIZING INTERFACE…', 'Booting neural motherboard diagnostics…');
 
   // Initialize Three.js scene
   initScene();

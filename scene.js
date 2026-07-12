@@ -160,7 +160,7 @@ function onCanvasClick() {
 function triggerCoreActivation() {
   isTransitioningCamera = true;
   document.body.style.cursor = 'default';
-  updateSystemStatus('CORE_SURGE', 'Drawing power surge from core system... sparks detected.');
+  updateSystemStatus('CORE_SURGE', 'Drawing power surge from core system… sparks detected.');
 
   // Camera Shake & Cinematic flash
   cameraShake(1.5);
