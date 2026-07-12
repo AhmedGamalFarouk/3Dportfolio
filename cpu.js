@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { setCpuSpotIntensity } from './lighting.js';
 
-let cpuGroup, cpuCoreMesh, leftCover, rightCover, boardMesh;
+let cpuGroup, cpuCoreMesh, leftCover, rightCover, boardMesh, indicatorGroup;
 let active = false;
 
 export function initCPU(scene) {
@@ -153,6 +153,35 @@ export function initCPU(scene) {
     cpuGroup.add(rightPin);
   }
 
+  // Pulsing holographic indicator ring and pointer arrow above CPU (first step call-to-action)
+  indicatorGroup = new THREE.Group();
+  indicatorGroup.position.set(0, 0.9, 0);
+
+  const ringGeo = new THREE.RingGeometry(0.85, 0.95, 32);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0x00f3ff,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2;
+  indicatorGroup.add(ring);
+
+  const coneGeo = new THREE.ConeGeometry(0.12, 0.28, 4);
+  const coneMat = new THREE.MeshBasicMaterial({
+    color: 0x00f3ff,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  const cone = new THREE.Mesh(coneGeo, coneMat);
+  cone.rotation.x = Math.PI; // point down
+  cone.position.set(0, 0.35, 0);
+  indicatorGroup.add(cone);
+
+  scene.add(indicatorGroup);
   scene.add(cpuGroup);
 }
 
@@ -244,7 +273,23 @@ export function pulseCpuCore(time) {
   if (!active) {
     // Faint slow glow pulsing
     cpuCoreMesh.material.emissiveIntensity = 0.5 + Math.sin(time * 2.0) * 0.3;
+
+    // Pulse indicator group
+    if (indicatorGroup) {
+      indicatorGroup.rotation.y = time * 0.8;
+      const pulseScale = 1.0 + Math.sin(time * 3.5) * 0.12;
+      indicatorGroup.scale.set(pulseScale, pulseScale, pulseScale);
+      indicatorGroup.position.y = 0.95 + Math.sin(time * 2.0) * 0.08;
+      
+      indicatorGroup.children.forEach(child => {
+        child.material.opacity = 0.5 + Math.sin(time * 3.5) * 0.35;
+      });
+    }
   } else {
+    // Hide indicator group on activation
+    if (indicatorGroup && indicatorGroup.visible) {
+      indicatorGroup.visible = false;
+    }
     // Energetic active neon flickering
     cpuCoreMesh.material.emissiveIntensity = 3.0 + Math.sin(time * 12.0) * 0.5 + (Math.random() - 0.5) * 0.2;
   }
