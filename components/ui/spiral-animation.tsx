@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
+import gsap from 'gsap'
 
 // 向量工具类
 class Vector2D {

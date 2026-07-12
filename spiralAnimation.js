@@ -1,4 +1,4 @@
-import { gsap } from 'gsap';
+import gsap from 'gsap';
 
 class Vector2D {
   constructor(x, y) {
@@ -24,11 +24,13 @@ class Vector3D {
 }
 
 class AnimationController {
-  constructor(canvas, ctx, dpr, size) {
+  constructor(canvas, ctx, dpr, width, height) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.dpr = dpr;
-    this.size = size;
+    this.width = width;
+    this.height = height;
+    this.size = Math.max(width, height);
     this.time = 0;
     this.stars = [];
     
@@ -150,10 +152,11 @@ class AnimationController {
       const y = this.viewZoom * position.y / dotDepthFromCamera;
       const sw = 400 * sizeFactor / dotDepthFromCamera;
       
+      this.ctx.strokeStyle = this.ctx.fillStyle;
       this.ctx.lineWidth = sw;
       this.ctx.beginPath();
-      this.ctx.arc(x, y, 0.5, 0, Math.PI * 2);
-      this.ctx.fill();
+      this.ctx.arc(x, y, 0.1, 0, Math.PI * 2);
+      this.ctx.stroke();
     }
   }
   
@@ -170,10 +173,10 @@ class AnimationController {
     if (!ctx) return;
     
     ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, this.size, this.size);
+    ctx.fillRect(0, 0, this.width, this.height);
     
     ctx.save();
-    ctx.translate(this.size / 2, this.size / 2);
+    ctx.translate(this.width / 2, this.height / 2);
     
     const t1 = this.constrain(this.map(this.time, 0, this.changeEventTime + 0.25, 0, 1), 0, 1);
     const t2 = this.constrain(this.map(this.time, this.changeEventTime, 1, 0, 1), 0, 1);
@@ -333,10 +336,9 @@ export function initSpiralAnimation() {
     const dpr = window.devicePixelRatio || 1;
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const size = Math.max(width, height);
     
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
     
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
@@ -346,7 +348,7 @@ export function initSpiralAnimation() {
     if (controller) {
       controller.destroy();
     }
-    controller = new AnimationController(canvas, ctx, dpr, size);
+    controller = new AnimationController(canvas, ctx, dpr, width, height);
   }
   
   window.addEventListener('resize', resize);
