@@ -1,6 +1,5 @@
 import { initScene, animateScene, focusOnModule, resetCameraToCore } from './scene.js';
 import { initHolograms, showHologram, hideAllHolograms } from './hologramUI.js';
-import { initSpiralAnimation } from './spiralAnimation.js';
 
 // Application States
 export const STATES = {
@@ -242,10 +241,7 @@ function initialize3DExperience() {
   hudOverlay.classList.remove('hidden');
   updateSystemStatus('INITIALIZING INTERFACE…', 'Booting neural motherboard diagnostics…');
 
-  // Initialize Spiral Animation Background
-  initSpiralAnimation();
-
-  // Initialize Three.js scene
+  // Initialize Three.js scene (spiral background is initialized inside initScene)
   initScene();
   
   // Initialize floating UI systems

@@ -12,20 +12,24 @@ import { initModules, checkModuleInteraction, resetModuleGlows } from './modules
 import { initParticles, triggerCpuExplosion, updateParticles } from './particles.js';
 import { updateHologramPositions } from './hologramUI.js';
 import { STATES, currentState, transitionTo, updateSystemStatus } from './main.js';
+import { initSpiralBackground, renderSpiralBackground } from './spiralAnimation.js';
 
 export let scene, camera, renderer, composer, controls;
 let raycaster, mouse;
 let isTransitioningCamera = false;
 let focusedModule = null;
 
+let spiralBgScene = null;
+let spiralBgCamera = null;
+
 export function initScene() {
   const canvas = document.getElementById('webgl-canvas');
 
   // Scene
   scene = new THREE.Scene();
-  scene.background = null; // transparent background to see spiral-canvas
+  scene.background = null; // transparent — spiral bg drawn first
   
-  // Fog for deep atmosphere fading to black
+  // Fog
   scene.fog = new THREE.FogExp2(0x000000, 0.035);
 
   // Camera
@@ -46,6 +50,12 @@ export function initScene() {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
+  renderer.autoClear = false; // we clear manually to composite layers
+
+  // Init spiral starfield background (renders into a canvas texture)
+  const { bgScene, bgCamera } = initSpiralBackground(renderer);
+  spiralBgScene  = bgScene;
+  spiralBgCamera = bgCamera;
 
   // Postprocessing Composer for cinematic bloom
   const renderPass = new RenderPass(scene, camera);
@@ -282,26 +292,25 @@ export function onWindowResize() {
 export function animateScene() {
   requestAnimationFrame(animateScene);
 
-  // Update controls
-  if (controls.enabled) {
-    controls.update();
-  }
+  if (controls.enabled) controls.update();
 
   const time = performance.now() * 0.001;
 
-  // Pulsing effects
   pulseCpuCore(time);
-  
-  // Animation Updates
   updateLighting(time);
   updateEnergySystem(time);
   updateParticles(time);
-  
-  // Project HTML Holograms over module locations
+
   if (currentState === STATES.MODULE_FOCUSED && focusedModule) {
     updateHologramPositions(focusedModule.mesh.position, camera);
   }
 
-  // Render
+  // 1. Clear everything
+  renderer.clear();
+
+  // 2. Draw spiral starfield background (fullscreen quad, no depth)
+  renderSpiralBackground(renderer);
+
+  // 3. Draw 3D scene with bloom on top
   composer.render();
 }
