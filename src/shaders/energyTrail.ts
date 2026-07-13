@@ -1,5 +1,5 @@
-// GLSL Energy Trail Shader — animated glowing pulse along circuit traces
-// Ported from the vanilla JS energySystem.js
+// DIAGNOSTIC: Ultra-simple shader that always renders bright regardless of progress
+// If this is visible, the issue is in the gating logic. If not, it's geometry/pipeline.
 
 export const energyTrailVertexShader = /* glsl */`
   varying vec2 vUv;

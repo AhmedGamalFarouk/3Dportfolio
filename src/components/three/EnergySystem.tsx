@@ -3,56 +3,60 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { useStore } from '@/store/useStore';
-import { energyTrailVertexShader, energyTrailFragmentShader } from '@/shaders/energyTrail';
 
 const CIRCUITS_DATA = [
   {
     id: 'tech',
-    color: 0x00f3ff,
+    color: '#00f3ff',
+    hexColor: 0x00f3ff,
     points: [
-      [0, 0.18, 0],
-      [-2.2, 0.18, -1.2],
-      [-2.2, 0.18, -5.0],
-      [-6, 0.18, -5],
+      new THREE.Vector3(0, 0.18, 0),
+      new THREE.Vector3(-2.2, 0.18, -1.2),
+      new THREE.Vector3(-2.2, 0.18, -5.0),
+      new THREE.Vector3(-6, 0.18, -5),
     ],
   },
   {
     id: 'human',
-    color: 0xbd00ff,
+    color: '#bd00ff',
+    hexColor: 0xbd00ff,
     points: [
-      [0, 0.18, 0],
-      [-3.2, 0.18, 1.2],
-      [-3.2, 0.18, 4.0],
-      [-7, 0.18, 4],
+      new THREE.Vector3(0, 0.18, 0),
+      new THREE.Vector3(-3.2, 0.18, 1.2),
+      new THREE.Vector3(-3.2, 0.18, 4.0),
+      new THREE.Vector3(-7, 0.18, 4),
     ],
   },
   {
     id: 'certs',
-    color: 0xffd700,
+    color: '#ffd700',
+    hexColor: 0xffd700,
     points: [
-      [0, 0.18, 0],
-      [3.2, 0.18, 1.2],
-      [3.2, 0.18, 4.0],
-      [7, 0.18, 4],
+      new THREE.Vector3(0, 0.18, 0),
+      new THREE.Vector3(3.2, 0.18, 1.2),
+      new THREE.Vector3(3.2, 0.18, 4.0),
+      new THREE.Vector3(7, 0.18, 4),
     ],
   },
   {
     id: 'projects',
-    color: 0x00ffd5,
+    color: '#00ffd5',
+    hexColor: 0x00ffd5,
     points: [
-      [0, 0.18, 0],
-      [2.2, 0.18, -1.2],
-      [2.2, 0.18, -5.0],
-      [6, 0.18, -5],
+      new THREE.Vector3(0, 0.18, 0),
+      new THREE.Vector3(2.2, 0.18, -1.2),
+      new THREE.Vector3(2.2, 0.18, -5.0),
+      new THREE.Vector3(6, 0.18, -5),
     ],
   },
   {
     id: 'contact',
-    color: 0xffffff,
+    color: '#ffffff',
+    hexColor: 0xffffff,
     points: [
-      [0, 0.18, 0],
-      [0.0, 0.18, 3.5],
-      [0, 0.18, 7.5],
+      new THREE.Vector3(0, 0.18, 0),
+      new THREE.Vector3(0.0, 0.18, 3.5),
+      new THREE.Vector3(0, 0.18, 7.5),
     ],
   },
 ];
@@ -62,52 +66,64 @@ interface CircuitLineProps {
 }
 
 function CircuitLine({ circuit }: CircuitLineProps) {
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
   const { energyFlowing } = useStore();
   const progressRef = useRef({ value: 0 });
 
   useEffect(() => {
     if (energyFlowing) {
-      console.log(`[EnergySystem] Flow starting for circuit: ${circuit.id}`);
       gsap.to(progressRef.current, {
         value: 1.0,
         duration: 2.2,
         ease: 'power1.inOut',
       });
     } else {
+      gsap.killTweensOf(progressRef.current);
       progressRef.current.value = 0;
     }
-  }, [energyFlowing, circuit.id]);
+  }, [energyFlowing]);
 
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = time;
-      materialRef.current.uniforms.uProgress.value = progressRef.current.value;
-    }
+  const { fullGeometry, curve } = useMemo(() => {
+    const c = new THREE.CatmullRomCurve3(circuit.points, false, 'centripetal', 0.25);
+    const geo = new THREE.TubeGeometry(c, 80, 0.06, 8, false);
+    return { fullGeometry: geo, curve: c };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Every frame: clip the tube geometry to only show up to the current progress
+  useFrame(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    const progress = progressRef.current.value;
+
+    // Show/hide the whole mesh based on progress 
+    mesh.visible = progress > 0.01;
+
+    if (!mesh.visible) return;
+
+    // Set the draw range to clip the tube to current progress.
+    // TubeGeometry has radialSegments*2*3 indices per segment, and 80 path segments.
+    const totalCount = fullGeometry.index
+      ? fullGeometry.index.count
+      : fullGeometry.attributes.position.count;
+    const clipped = Math.floor(totalCount * progress);
+    fullGeometry.setDrawRange(0, Math.max(clipped, 0));
+
+    // Also update emissive intensity for glow effect
+    const mat = mesh.material as THREE.MeshStandardMaterial;
+    const pulse = Math.sin(Date.now() * 0.005) * 0.5 + 1.5;
+    mat.emissiveIntensity = pulse;
   });
 
-  const curve = useMemo(() => {
-    const pathPoints = circuit.points.map((p) => new THREE.Vector3(...p));
-    return new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.25);
-  }, [circuit.points]);
-
   return (
-    <mesh>
-      {/* Declarative geometry instantiation via R3F JSX */}
-      <tubeGeometry args={[curve, 64, 0.08, 8, false]} />
-      <shaderMaterial
-        ref={materialRef}
-        vertexShader={energyTrailVertexShader}
-        fragmentShader={energyTrailFragmentShader}
-        transparent
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        uniforms={{
-          uTime: { value: 0 },
-          uProgress: { value: 0 },
-          uColor: { value: new THREE.Color(circuit.color) },
-        }}
+    <mesh ref={meshRef} geometry={fullGeometry} visible={false}>
+      <meshStandardMaterial
+        color={circuit.hexColor}
+        emissive={circuit.hexColor}
+        emissiveIntensity={2.0}
+        roughness={0}
+        metalness={0}
+        transparent={false}
       />
     </mesh>
   );
@@ -126,7 +142,7 @@ export function EnergySystem() {
           'CORE_ACTIVE',
           'Neural pathways primed. Select a capability module for deep inspection.'
         );
-      }, 2200);
+      }, 2400);
 
       return () => clearTimeout(timer);
     }
