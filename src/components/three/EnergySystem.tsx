@@ -68,7 +68,7 @@ function CircuitLine({ circuit }: CircuitLineProps) {
 
   useEffect(() => {
     if (energyFlowing) {
-      // Animate progress of energy flow tube from 0 to 1
+      console.log(`[EnergySystem] Flow starting for circuit: ${circuit.id}`);
       gsap.to(progressRef.current, {
         value: 1.0,
         duration: 2.2,
@@ -77,7 +77,7 @@ function CircuitLine({ circuit }: CircuitLineProps) {
     } else {
       progressRef.current.value = 0;
     }
-  }, [energyFlowing]);
+  }, [energyFlowing, circuit.id]);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
@@ -94,7 +94,8 @@ function CircuitLine({ circuit }: CircuitLineProps) {
 
   return (
     <mesh>
-      <tubeGeometry args={[curve, 64, 0.05, 8, false]} />
+      {/* Declarative geometry instantiation via R3F JSX */}
+      <tubeGeometry args={[curve, 64, 0.08, 8, false]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={energyTrailVertexShader}
