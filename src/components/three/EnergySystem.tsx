@@ -57,70 +57,87 @@ const CIRCUITS_DATA = [
   },
 ];
 
-export function EnergySystem() {
-  const materialsRef = useRef<THREE.ShaderMaterial[]>([]);
-  const { energyFlowing, setCpuActive, setCurrentState, setHUDText } = useStore();
+interface CircuitLineProps {
+  circuit: typeof CIRCUITS_DATA[number];
+}
+
+function CircuitLine({ circuit }: CircuitLineProps) {
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const { energyFlowing } = useStore();
   const progressRef = useRef({ value: 0 });
 
-  // Run energy flow outwards from CPU to modules
   useEffect(() => {
     if (energyFlowing) {
-      // Slide CPU covers and start camera shake
-      setCpuActive(true);
-
-      // Animate progress of energy flow tubes from 0 to 1
+      // Animate progress of energy flow tube from 0 to 1
       gsap.to(progressRef.current, {
         value: 1.0,
         duration: 2.2,
         ease: 'power1.inOut',
-        onUpdate: () => {
-          materialsRef.current.forEach((mat) => {
-            if (mat) mat.uniforms.uProgress.value = progressRef.current.value;
-          });
-        },
-        onComplete: () => {
-          setCurrentState('CORE_ACTIVE');
-          setHUDText(
-            'CORE_ACTIVE',
-            'Neural pathways primed. Select a capability module for deep inspection.'
-          );
-        },
       });
+    } else {
+      progressRef.current.value = 0;
     }
-  }, [energyFlowing, setCpuActive, setCurrentState, setHUDText]);
+  }, [energyFlowing]);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    materialsRef.current.forEach((mat) => {
-      if (mat) mat.uniforms.uTime.value = time;
-    });
+    if (materialRef.current) {
+      materialRef.current.uniforms.uTime.value = time;
+      materialRef.current.uniforms.uProgress.value = progressRef.current.value;
+    }
   });
+
+  // Re-generate curve and geometry on components mount
+  const geometry = useRef<THREE.TubeGeometry | null>(null);
+  if (!geometry.current) {
+    const pathPoints = circuit.points.map((p) => new THREE.Vector3(...p));
+    const curve = new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.25);
+    geometry.current = new THREE.TubeGeometry(curve, 64, 0.045, 8, false);
+  }
+
+  return (
+    <mesh geometry={geometry.current}>
+      <shaderMaterial
+        ref={materialRef}
+        vertexShader={energyTrailVertexShader}
+        fragmentShader={energyTrailFragmentShader}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        uniforms={{
+          uTime: { value: 0 },
+          uProgress: { value: 0 },
+          uColor: { value: new THREE.Color(circuit.color) },
+        }}
+      />
+    </mesh>
+  );
+}
+
+export function EnergySystem() {
+  const { energyFlowing, setCpuActive, setCurrentState, setHUDText } = useStore();
+
+  useEffect(() => {
+    if (energyFlowing) {
+      setCpuActive(true);
+
+      const timer = setTimeout(() => {
+        setCurrentState('CORE_ACTIVE');
+        setHUDText(
+          'CORE_ACTIVE',
+          'Neural pathways primed. Select a capability module for deep inspection.'
+        );
+      }, 2200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [energyFlowing, setCpuActive, setCurrentState, setHUDText]);
 
   return (
     <>
-      {CIRCUITS_DATA.map((circuit, idx) => {
-        const pathPoints = circuit.points.map((p) => new THREE.Vector3(...p));
-        const curve = new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.25);
-        const geometry = new THREE.TubeGeometry(curve, 64, 0.045, 8, false);
-
-        return (
-          <mesh key={circuit.id} geometry={geometry}>
-            <shaderMaterial
-              ref={(el) => { if (el) materialsRef.current[idx] = el; }}
-              vertexShader={energyTrailVertexShader}
-              fragmentShader={energyTrailFragmentShader}
-              transparent
-              depthWrite={false}
-              blending={THREE.AdditiveBlending}
-              uniforms={{
-                uTime: { value: 0 },
-                uProgress: { value: 0 },
-                uColor: { value: new THREE.Color(circuit.color) },
-              }}
-            />
-          </mesh>
-        );
-      })}
+      {CIRCUITS_DATA.map((circuit) => (
+        <CircuitLine key={circuit.id} circuit={circuit} />
+      ))}
     </>
   );
 }
