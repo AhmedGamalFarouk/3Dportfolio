@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import gsap from 'gsap';
@@ -10,49 +10,49 @@ const CIRCUITS_DATA = [
     id: 'tech',
     color: 0x00f3ff,
     points: [
-      [0, 0.1, 0],
-      [-2.2, 0.1, -1.2],
-      [-2.2, 0.1, -5.0],
-      [-6, 0.1, -5],
+      [0, 0.18, 0],
+      [-2.2, 0.18, -1.2],
+      [-2.2, 0.18, -5.0],
+      [-6, 0.18, -5],
     ],
   },
   {
     id: 'human',
     color: 0xbd00ff,
     points: [
-      [0, 0.1, 0],
-      [-3.2, 0.1, 1.2],
-      [-3.2, 0.1, 4.0],
-      [-7, 0.1, 4],
+      [0, 0.18, 0],
+      [-3.2, 0.18, 1.2],
+      [-3.2, 0.18, 4.0],
+      [-7, 0.18, 4],
     ],
   },
   {
     id: 'certs',
     color: 0xffd700,
     points: [
-      [0, 0.1, 0],
-      [3.2, 0.1, 1.2],
-      [3.2, 0.1, 4.0],
-      [7, 0.1, 4],
+      [0, 0.18, 0],
+      [3.2, 0.18, 1.2],
+      [3.2, 0.18, 4.0],
+      [7, 0.18, 4],
     ],
   },
   {
     id: 'projects',
     color: 0x00ffd5,
     points: [
-      [0, 0.1, 0],
-      [2.2, 0.1, -1.2],
-      [2.2, 0.1, -5.0],
-      [6, 0.1, -5],
+      [0, 0.18, 0],
+      [2.2, 0.18, -1.2],
+      [2.2, 0.18, -5.0],
+      [6, 0.18, -5],
     ],
   },
   {
     id: 'contact',
     color: 0xffffff,
     points: [
-      [0, 0.1, 0],
-      [0.0, 0.1, 3.5],
-      [0, 0.1, 7.5],
+      [0, 0.18, 0],
+      [0.0, 0.18, 3.5],
+      [0, 0.18, 7.5],
     ],
   },
 ];
@@ -87,16 +87,14 @@ function CircuitLine({ circuit }: CircuitLineProps) {
     }
   });
 
-  // Re-generate curve and geometry on components mount
-  const geometry = useRef<THREE.TubeGeometry | null>(null);
-  if (!geometry.current) {
+  const curve = useMemo(() => {
     const pathPoints = circuit.points.map((p) => new THREE.Vector3(...p));
-    const curve = new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.25);
-    geometry.current = new THREE.TubeGeometry(curve, 64, 0.045, 8, false);
-  }
+    return new THREE.CatmullRomCurve3(pathPoints, false, 'centripetal', 0.25);
+  }, [circuit.points]);
 
   return (
-    <mesh geometry={geometry.current}>
+    <mesh>
+      <tubeGeometry args={[curve, 64, 0.05, 8, false]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={energyTrailVertexShader}
